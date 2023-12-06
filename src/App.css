@@ -1,10 +1,125 @@
 .App {
   text-align: center;
+  background-color: yellow;
+}
+
+.button {
+  font-weight: bold;
+  background-color: white;
+  border-radius: 30px;
+  margin-right: 10px;
+  display: inline-flex;
+  padding: 20px;
+  align-items: center;
+}
+
+.hexLink {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  padding: 3em;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: black;
+}
+
+.hexRow {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+}
+
+.secondHexRow {
+  position: relative;
+  top: -20px;
+}
+
+.thirdHexRow {
+  position: relative;
+  top: -40px;
+}
+
+.hexTop {
+   border-bottom: 30px solid rgb(228, 234, 243);
+   border-left: 52px solid transparent;
+   border-right: 52px solid transparent;
+}
+
+.centerHexTop {
+   border-bottom: 30px solid rgb(255, 217, 36);
+   border-left: 52px solid transparent;
+   border-right: 52px solid transparent;
+}
+
+.centerHexCenter {
+   border-bottom: 30px solid  rgb(255, 217, 36);
+   border-left: 52px solid transparent;
+   border-right: 52px solid transparent;
+}
+
+.hexBottom {
+   width: 0;
+   border-top: 30px solid rgb(228, 234, 243);
+   border-left: 52px solid transparent;
+   border-right: 52px solid transparent;
+}
+
+.centerHexBottom {
+   width: 0;
+   border-top: 30px solid rgb(255, 217, 36);
+   border-left: 52px solid transparent;
+   border-right: 52px solid transparent;
+}
+
+.hexMiddle {
+   width: 104px;
+   height: 60px;
+   background-color: rgb(228, 234, 243);
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+}
+
+.centerHexMiddle {
+   width: 104px;
+   height: 60px;
+   background-color: rgb(255, 217, 36);
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+}
+
+.hexText {
+   text-align: center;
+   width: 100%;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+#wordSpan {
+  font-weight: bold
+}
+
+#wordSpan::after {
+  content: "";
+  width: 4px;
+  height: 12px;
+  background: rgb(255, 217, 36);
+  border: 1px solid black;
+  display: inline-block;
+  animation: cursor-blink 1.5s steps(2) infinite;
+  margin-left: 3px;
+}
+
+@keyframes cursor-blink {
+  0% {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
