@@ -11,9 +11,9 @@ const App = (props) => {
       const [data, setData] = useState({});
       const [score, setScore] = useState(0);
       const [error, setError] = useState('');
+      const [sortOrder, setSortOrder] = useState(1);
 
       const letterClick = (event) => {
-        console.log("Child click: " + event.currentTarget.text);
         let newWord = word + event.currentTarget.text;
         setWord(newWord);
       }
@@ -33,6 +33,7 @@ const App = (props) => {
         } else if (wordList.includes(word)) {
            setError("Already found.");
         } else {
+          setError("");
           wordList.unshift(word);
           // check for pangram
           let letters = word.split("");
@@ -75,9 +76,6 @@ const App = (props) => {
         }, [keyDownHandler]);
 
       useEffect(() => {
-          /**
-          TODO reset if letters are new (i.e it's a new game)
-          */
           if (localStorage.getItem("wordlist") !== null) {
             setWordList(JSON.parse(localStorage.getItem("wordlist")));
           }
@@ -127,11 +125,31 @@ const App = (props) => {
          fetchGame();
       }
 
+      const showSolution = () => {
+        window.open("/solution");
+      }
+
+      const showHints = () => {
+        window.open("/hints");
+      }
+
+      const changeSortOrder = (e) => {
+         setSortOrder(parseInt(e.target.value));
+      }
+
       let splitWordList = [];
       let wordRow = [];
+      let sortedWordList;
+
       if (wordList !== null) {
-         wordList.forEach((word, index) => {
-            if (wordRow.length % 5 == 0 && wordRow.length !== 0) {
+         if (sortOrder === 2) { // alphabetical order
+            let wordListCopy = wordList.map((x) => x);
+            sortedWordList = wordListCopy.sort();
+         } else {
+            sortedWordList = wordList;
+         }
+         sortedWordList.forEach((word, index) => {
+            if (wordRow.length % Math.ceil(sortedWordList.length / 4) == 0 && wordRow.length !== 0) {
               splitWordList.push(wordRow.map((x) => x));
               wordRow.length = 0;
             }
@@ -173,9 +191,17 @@ const App = (props) => {
             <div style={{display:"flex", flexDirection:"row", height: "30px", justifyContent:"center"}}>
               <span style={{width: "200px", textAlign: "center", fontWeight: "bold"}}>Score: {score}/{data.total} points</span>
             </div>
-            <div style={{display:"flex", flexDirection:"row", height: "30px", justifyContent:"center", height: "auto"}}>
+            <div style={{display:"flex", flexDirection:"row", height: "auto", justifyContent:"center"}}>
+              <div>
+                <select onChange={changeSortOrder} className="button select">
+                  <option value="1">Sort words by order found</option>
+                  <option value="2">Sort words alphabetically</option>
+                </select>
+              </div>
+            </div>
+            <div style={{display:"flex", flexDirection:"row", height: "30px", justifyContent:"center", width: "auto", height: "auto", position: "relative", left: "-40px"}}>
               <div style={{fontWeight: "bold", width: "300px"}}>
-                <div style={{display: "flex", flexDirection: "col"}}>
+                <div style={{display: "flex", flexDirection: "row"}}>
                   {splitWordList !== null && splitWordList.map((wordRow) => {
                     return (<div style={{paddingRight: "30px"}}>
                       {wordRow.map((word) =>
@@ -186,10 +212,10 @@ const App = (props) => {
                 </div>
               </div>
             </div>
-            <div style={{display:"flex", flexDirection:"col", height: "30px", justifyContent:"center"}}>
+            <div style={{display:"flex", flexDirection:"row", height: "30px", justifyContent:"center"}}>
                <button className="button" onClick={newGame}>New Game</button>
-               <button className="button" onClick={newGame}>Show Hints</button>
-               <button className="button" onClick={newGame}>Show Solution</button>
+               <button className="button" onClick={showHints}>Show Hints</button>
+               <button className="button" onClick={showSolution}>Show Solution</button>
             </div>
           </div>
       );
