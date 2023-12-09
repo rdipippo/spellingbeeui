@@ -23,7 +23,7 @@ const Hints = (props) => {
        twoLetterHintMap.set(firstTwo, previousTotal + 1)
     }
 
-    let previousTotal3 = twoLetterHintMap.get(firstThree);
+    let previousTotal3 = threeLetterHintMap.get(firstThree);
     if ( previousTotal3 === undefined) {
        threeLetterHintMap.set(firstThree, 1);
     } else {
