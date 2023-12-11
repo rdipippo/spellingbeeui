@@ -3,6 +3,8 @@ import './App.css';
 import LetterHex from './LetterHex';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 
 const App = (props) => {
 
@@ -16,6 +18,36 @@ const App = (props) => {
       const letterClick = (event) => {
         let newWord = word + event.currentTarget.text;
         setWord(newWord);
+      }
+
+      const letterDrop = (dragTarget, dropTarget) => {
+         let lettersCopy = data.letters.repeat(1);
+         let centerCopy = data.center.repeat(1);
+         var a = [lettersCopy[0],
+                  lettersCopy[1],
+                  lettersCopy[2],
+                  centerCopy,
+                  lettersCopy[3],
+                  lettersCopy[4],
+                  lettersCopy[5]];
+         let dragIndex, dropIndex;
+         a.forEach((letter, index) => {
+            if (letter.toUpperCase() === dragTarget.name) {
+               dragIndex = index;
+            } else if (letter.toUpperCase() === dropTarget.name) {
+               dropIndex = index;
+            }
+         })
+
+         //alert(`You dropped ${dragIndex} into ${dropIndex}...`);
+         a[dropIndex] = dragTarget.name;
+         a[dragIndex] = dropTarget.name;
+
+         const newData = {...data,
+                                           center: a[3],
+                                           letters: a[0] + a[1] + a[2] + a[4] + a[5] + a[6]}
+
+         setData(newData) ;
       }
 
       const deleteLetter = (event) => {
@@ -64,7 +96,7 @@ const App = (props) => {
           deleteLetter();
         } else if (data.letters !== undefined &&
                    (data.letters.includes(event.key.toLowerCase()) || data.center === (event.key.toLowerCase()))) {
-            letterClick({currentTarget: {text: event.key.toUpperCase()}})
+          letterClick({currentTarget: {text: event.key.toUpperCase()}})
         }
       };
 
@@ -91,6 +123,9 @@ const App = (props) => {
           }
         }, []);
 
+useEffect(() => {
+    console.log(data);
+  }, [data]);
       const shuffle = () => {
           var a = data.letters.split(""),
               n = a.length;
@@ -163,6 +198,7 @@ const App = (props) => {
       /** TODO move styles to css */
       return(
           data.wordlist !== undefined &&
+          <DndProvider backend={HTML5Backend}>
           <div>
             <div style={{display:"flex", flexDirection:"row", height: "30px", paddingTop: "20px", justifyContent:"center"}}>
               <span style={{fontWeight: "bold", color: "red"}}>{error}</span>
@@ -171,17 +207,17 @@ const App = (props) => {
               <span id="wordSpan">{word}</span>
             </div>
             <div className="hexRow">
-              <LetterHex letter={data.letters[0]} clickHandler={letterClick}/>
-              <LetterHex letter={data.letters[1]} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[0]} dropHandler={letterDrop} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[1]} dropHandler={letterDrop} clickHandler={letterClick}/>
             </div>
             <div className="hexRow secondHexRow">
-              <LetterHex letter={data.letters[2]} clickHandler={letterClick}/>
-              <LetterHex center={true} letter={data.center} clickHandler={letterClick}/>
-              <LetterHex letter={data.letters[3]} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[2]} dropHandler={letterDrop} clickHandler={letterClick}/>
+              <LetterHex center={true} letter={data.center} dropHandler={letterDrop} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[3]} dropHandler={letterDrop} clickHandler={letterClick}/>
             </div>
             <div className="hexRow thirdHexRow">
-              <LetterHex letter={data.letters[4]} clickHandler={letterClick}/>
-              <LetterHex letter={data.letters[5]} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[4]} dropHandler={letterDrop} clickHandler={letterClick}/>
+              <LetterHex letter={data.letters[5]} dropHandler={letterDrop} clickHandler={letterClick}/>
             </div>
             <div style={{paddingBottom: "40px", display:"flex", flexDirection:"row", height: "30px", justifyContent:"center"}}>
               <button className="button" onClick={deleteLetter}>Delete</button>
@@ -218,6 +254,7 @@ const App = (props) => {
                <button className="button" onClick={showSolution}>Show Solution</button>
             </div>
           </div>
+          </DndProvider>
       );
 
 
